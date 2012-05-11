@@ -1,0 +1,25 @@
+name: Broadcaster
+main: com.tetra.broadcaster.Broadcaster
+version: 1.3.6b
+author: [Mastershake71]
+commands:
+   shout:
+      description: Broadcasts a message to the server. Usable once ever 30 minutes.
+      permission: broadcaster.broadcast
+      usage: /shout <message>
+   broadcastlist:
+      description: Shows the number of indexes used in the broadcastList.
+      permission: broadcaster.broadcastlist
+      usage: /broadcastlist
+   broadcastpurge:
+      description: Purges Broadcast lists and resets them.
+      permission: broadcaster.purge
+      usage: /broadcastpurge
+   autobroadcast:
+      description: sets your broadcast to be auto broadcasted.
+      permission: broadcaster.autobroadcast
+      usage: /autobroadcast [on;off;set] <message>
+   apb:
+      description: Sends an admin broadcast/alert message.
+      permission: broadcaster.staff
+      usage: /apb <message>
