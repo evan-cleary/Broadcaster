@@ -1,0 +1,17 @@
+name: Broadcaster
+main: com.tetra.broadcaster.Broadcaster
+version: 1.5.0rb
+author: [Mastershake71]
+commands:
+   shout:
+      description: Broadcasts a message to the server. Usable once ever 30 minutes.
+      permission: broadcaster.broadcast
+      usage: /shout <message>
+   speed:
+      description: Gives player a boost.
+      permissions: fearboost.speed
+      usage: /speed
+   apb:
+      description: Sends an admin broadcast/alert message.
+      permission: broadcaster.staff
+      usage: /apb <message>
