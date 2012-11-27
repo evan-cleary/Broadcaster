@@ -16,7 +16,8 @@ public class BCConfig {
     YamlConfiguration config = new YamlConfiguration();
     boolean changed = false;
     private int bCooldown;
-    private int sCooldown;
+    private String bFormat;
+    private String apbFormat;
 
     public BCConfig(Broadcaster instance) {
         this.BC = instance;
@@ -36,11 +37,17 @@ public class BCConfig {
         } else {
             this.bCooldown = config.getInt("general.broadcast.cooldown");
         }
-        if (!config.contains("general.speed.cooldown")) {
-            config.set("general.speed.cooldown", 900);
+        if (!config.contains("general.broadcast.format")) {
+            config.set("general.broadcast.format", "§3[§8RoguePvP§3] §8'{player}§8'§c - {message}");
             changed = true;
         } else {
-            this.sCooldown = config.getInt("general.speed.cooldown");
+            this.bFormat = config.getString("general.broadcast.format");
+        }
+        if (!config.contains("general.apb.format")) {
+            config.set("general.apb.format", "§c[APB Broadcast]§f '{player}'§6 - {message}");
+            changed = true;
+        } else {
+            this.apbFormat = config.getString("general.apb.format");
         }
         if (changed) {
             try {
@@ -50,7 +57,7 @@ public class BCConfig {
             } catch (IOException ex) {
             }
         } else {
-            System.out.println("[FearForAll] Done loading config!");
+            System.out.println("[Broadcaster] Done loading config!");
         }
     }
 
@@ -58,7 +65,11 @@ public class BCConfig {
         return bCooldown;
     }
 
-    public int getSCooldown() {
-        return sCooldown;
+    public String getBFormat() {
+        return bFormat;
+    }
+
+    public String getAPBFormat() {
+        return apbFormat;
     }
 }

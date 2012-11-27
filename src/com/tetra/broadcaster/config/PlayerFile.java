@@ -35,18 +35,6 @@ public class PlayerFile {
         return 0;
     }
 
-    public long getSLastUsed(String player_name) {
-        String target = player_name.toLowerCase();
-        File userfile = new File(userdataPath + "/" + target + ".yml");
-        YamlConfiguration userdata = new YamlConfiguration();
-        try {
-            userdata.load(userfile);
-            return userdata.getLong("general.speed.lastused", 0);
-        } catch (Exception ex) {
-        }
-        return 0;
-    }
-
     public void setBLastUsed(String player_name) {
         String target = player_name.toLowerCase();
         File userfile = new File(userdataPath + "/" + target + ".yml");
@@ -57,21 +45,6 @@ public class PlayerFile {
         }
         try {
             userdata.set("general.broadcast.lastused", System.currentTimeMillis());
-            userdata.save(userfile);
-        } catch (Exception ex2) {
-        }
-    }
-
-    public void setSLastUsed(String player_name) {
-        String target = player_name.toLowerCase();
-        File userfile = new File(userdataPath + "/" + target + ".yml");
-        YamlConfiguration userdata = new YamlConfiguration();
-        try {
-            userdata.load(userfile);
-        } catch (Exception ex) {
-        }
-        try {
-            userdata.set("general.speed.lastused", System.currentTimeMillis());
             userdata.save(userfile);
         } catch (Exception ex2) {
         }

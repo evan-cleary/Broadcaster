@@ -18,21 +18,16 @@ package com.tetra.broadcaster;
 import com.tetra.broadcaster.config.BCConfig;
 import com.tetra.broadcaster.config.PlayerFile;
 import com.tetra.broadcaster.handlers.BroadcastHandler;
-import com.tetra.broadcaster.handlers.SpeedHandler;
 import java.util.logging.Logger;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 public class Broadcaster extends JavaPlugin {
 
     private BroadcastHandler BH;
-    private SpeedHandler SH;
     private static Broadcaster instance;
     static final Logger log = Logger.getLogger("Minecraft");
     private BCConfig config;
@@ -45,31 +40,12 @@ public class Broadcaster extends JavaPlugin {
         config.load();
         this.PF = new PlayerFile(this);
         this.BH = new BroadcastHandler(this);
-        this.SH = new SpeedHandler(this);
         log.info("Broadcaster has been activated");
     }
 
     @Override
     public void onDisable() {
         log.info("Shutting down broadcaster");
-    }
-
-    public String getStaff(Player[] players) {
-        String OnlineStaff = "";
-        for (int i = 0; i < players.length; i++) {
-            if (players[i].hasPermission(new Permission("broadcaster.staff"))) {
-                if (OnlineStaff.equals("")) {
-                    OnlineStaff += (players[i].getName());
-                } else {
-                    OnlineStaff += (" " + players[i].getName());
-                }
-            }
-        }
-        if (!OnlineStaff.equals("")) {
-            return OnlineStaff.replace(" ", ", ");
-        } else {
-            return "None";
-        }
     }
 
     // Command Handlers
@@ -86,25 +62,10 @@ public class Broadcaster extends JavaPlugin {
             } else {
                 if (!BH.shoutUsed(player)) {
                     if (args.length > 0) {
-                        String msg = BH.buildString(args);
-                        char[] breakDown = msg.toCharArray();
-                        int capCount = 0;
-                        for (char c : breakDown) {
-                            if (Character.isUpperCase(c)) {
-                                capCount++;
-                            }
-                        }
-                        this.getServer().broadcastMessage(
-                                ChatColor.YELLOW + "[" + ChatColor.RED
-                                + "FearPvP" + ChatColor.YELLOW + "] "
-                                + "'" + ChatColor.WHITE
-                                + player.getDisplayName()
-                                + ChatColor.RED + "' - "
-                                + msg);
+                        BH.broadcast(player, args);
                         BH.usedShout(player);
                     } else {
-                        player.sendMessage(ChatColor.RED + "Usage: "
-                                + cmd.getUsage());
+                        player.sendMessage(ChatColor.RED + "Usage: " + cmd.getUsage());
                     }
                 } else {
                     BH.sendTimeRemain(player);
@@ -122,22 +83,6 @@ public class Broadcaster extends JavaPlugin {
                 }
             }
             return false;
-        }
-
-        if (cmd.getName().equalsIgnoreCase("speed")) {
-            if (player == null) {
-                sender.sendMessage("This command can only be run by a player");
-            } else {
-                if (!SH.speedUsed(player)) {
-                    PotionEffect pe = new PotionEffect(PotionEffectType.SPEED, 600, 1);
-                    player.addPotionEffect(pe);
-                    SH.usedSpeed(player);
-                    return true;
-                } else {
-                    SH.sendTimeRemain(player);
-                    return true;
-                }
-            }
         }
 
         return false;

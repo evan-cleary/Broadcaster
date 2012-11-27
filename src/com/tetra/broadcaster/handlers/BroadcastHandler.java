@@ -16,6 +16,7 @@
 package com.tetra.broadcaster.handlers;
 
 import com.tetra.broadcaster.Broadcaster;
+import com.tetra.broadcaster.config.BCConfig;
 import com.tetra.broadcaster.config.PlayerFile;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -29,11 +30,13 @@ public class BroadcastHandler {
     private PlayerFile PF;
     private long cooldown;
     private Calendar c;
+    private BCConfig config;
 
     public BroadcastHandler(Broadcaster instance) {
         this.plugin = instance;
         this.PF = plugin.getPlayerFiles();
-        this.cooldown = plugin.getBConfig().getBCooldown() * 1000;
+        this.config = instance.getBConfig();
+        this.cooldown = config.getBCooldown() * 1000;
     }
 
     public String buildString(String[] message) {
@@ -63,6 +66,12 @@ public class BroadcastHandler {
         return true;
     }
 
+    public void broadcast(Player p, String[] message) {
+        String compiledMessage = buildString(message);
+        String formattedMessage = config.getBFormat().replace("{player}", p.getDisplayName()).replace("{message}", compiledMessage);
+        plugin.getServer().broadcastMessage(formattedMessage);
+    }
+
     public void usedShout(Player p) {
         plugin.getPlayerFiles().setBLastUsed(p.getName());
     }
@@ -88,20 +97,10 @@ public class BroadcastHandler {
     public void perfAdminShout(Player a, String[] message) {
         if (a.hasPermission(new Permission("broadcaster.staff"))) {
             String msg = buildString(message);
-            char[] breakDown = msg.toCharArray();
-            int capCount = 0;
-            for (char c : breakDown) {
-                if (Character.isUpperCase(c)) {
-                    capCount++;
-                }
-            }
-            plugin.getServer().broadcastMessage(
-                    ChatColor.RED + "[APB Broadcast] " + ChatColor.WHITE + "'"
-                    + a.getDisplayName() + "'" + ChatColor.GOLD + " - "
-                    + msg);
+            String formattedMessage = config.getAPBFormat().replace("{player}", a.getDisplayName()).replace("{message}", msg);
+            plugin.getServer().broadcastMessage(formattedMessage);
         } else {
-            a.sendMessage(ChatColor.RED
-                    + "You do not have the required permissions to perform this command. How did you even get to this arguement?");
+            a.sendMessage(ChatColor.RED + "You do not have the required permissions to perform this command. How did you even get to this arguement?");
         }
     }
 
@@ -112,8 +111,6 @@ public class BroadcastHandler {
         c.setTimeInMillis(started);
         c.add(Calendar.SECOND, (int) cd);
         c.add(Calendar.MILLISECOND, (int) ((cd * 1000.0) % 1000.0));
-        player.sendMessage(ChatColor.RED
-                + "You must wait "
-                + Util.formatDateDiff(c.getTimeInMillis()) + " before performing this action.");
+        player.sendMessage(ChatColor.RED + "You must wait " + Util.formatDateDiff(c.getTimeInMillis()) + " before performing this action.");
     }
 }
